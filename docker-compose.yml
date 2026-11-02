@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  zerotrace-vault:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zerotrace_vault_app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: false

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZeroTrace-Vault — Zero-Knowledge Single-View Ephemeral Secret Sharing with AES-256-GCM browser encryption.">
+  <title>ZeroTrace-Vault — Ephemeral Secret Sharing</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <main class="container" role="main">
+    <header class="header">
+      <div class="badge-wrapper">
+        <div class="security-badge">
+          <span class="pulse-dot"></span>
+          <span>Zero-Knowledge Engine</span>
+        </div>
+      </div>
+      <h1 class="title">ZeroTrace-Vault</h1>
+      <p class="subtitle">Client-Side AES-256-GCM. RFC 3986 Anchor Isolation. Single-View Burn.</p>
+    </header>
+
+    <!-- VIEW 1: CREATE SECRET (ALICE) -->
+    <section id="create-view" class="card" aria-label="Create Ephemeral Secret">
+      <div class="label-row">
+        <label for="secret-input">Secret Payload (Password, API Key, Token)</label>
+        <span id="char-counter" class="char-counter">0 chars</span>
+      </div>
+
+      <div class="input-container">
+        <textarea 
+          id="secret-input" 
+          placeholder="Paste sensitive credentials or keys here..." 
+          spellcheck="false"
+          autofocus
+        ></textarea>
+      </div>
+      
+      <div class="feature-pills">
+        <span class="pill">🔒 AES-GCM-256 (SubtleCrypto)</span>
+        <span class="pill">⚡ Strict Single-View</span>
+        <span class="pill">🛡️ Zero Server Memory Residual</span>
+      </div>
+
+      <button id="btn-create" class="btn btn-primary" type="button">
+        <span>🔐 Encrypt & Generate One-Time Link</span>
+      </button>
+      <p class="shortcut-hint">Press <strong>Ctrl + Enter</strong> to encrypt instantly</p>
+    </section>
+
+    <!-- VIEW 2: SHARE CREATED LINK -->
+    <section id="share-view" class="card hidden" aria-label="Share Ephemeral Link">
+      <div class="alert alert-success">
+        <strong>✅ Secret Encrypted In Your Browser!</strong>
+        <p>The AES-256 decryption key is stored strictly inside the URL hash fragment (#). It was never transmitted across the network.</p>
+      </div>
+
+      <div class="label-row">
+        <label>One-Time Ephemeral URL:</label>
+      </div>
+      <div id="share-link" class="output-box" tabindex="0"></div>
+
+      <button id="btn-copy" class="btn btn-primary" type="button">
+        <span>📋 Copy Link to Clipboard</span>
+      </button>
+
+      <button id="btn-new" class="btn btn-secondary" type="button">
+        <span>Create Another Secret</span>
+      </button>
+    </section>
+
+    <!-- VIEW 3: REVEAL CONFIRMATION (BOB) -->
+    <section id="reveal-confirm-view" class="card hidden" aria-label="Confirm Secret Retrieval">
+      <div class="alert alert-warning">
+        <strong>⚠️ Strict Burn-on-Read Policy:</strong>
+        <p>This secret is primed for single-view destruction. Clicking the button below will retrieve the encrypted payload and permanently purge it from server memory.</p>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+        Automated crawlers and bot previews are blocked. Please click to verify human intent and decrypt locally.
+      </p>
+
+      <button id="btn-reveal" class="btn btn-danger" type="button">
+        <span>🔥 Click to Reveal & Burn Secret</span>
+      </button>
+    </section>
+
+    <!-- VIEW 4: DECRYPTED SECRET DISPLAY -->
+    <section id="revealed-view" class="card hidden" aria-label="Decrypted Secret Content">
+      <div class="alert alert-success">
+        <strong>🔥 Secret Successfully Burned!</strong>
+        <p>The payload has been completely purged from server memory. It can never be recovered.</p>
+      </div>
+
+      <div class="label-row">
+        <label>Authentic Decrypted Secret:</label>
+      </div>
+      <div id="secret-content" class="secret-display" tabindex="0"></div>
+
+      <button id="btn-copy-secret" class="btn btn-primary" type="button">
+        <span>📋 Copy Secret to Clipboard</span>
+      </button>
+
+      <a href="/" class="btn btn-secondary" style="margin-top: 10px; text-decoration: none;">Create Your Own Secret</a>
+    </section>
+
+    <!-- VIEW 5: ALREADY DESTROYED / 404 -->
+    <section id="burned-view" class="card hidden" aria-label="Secret Expired or Burned">
+      <div class="alert alert-danger">
+        <h3 style="margin-bottom: 8px;">❌ 404: Secret Destroyed</h3>
+        <p>This secret has already been retrieved and permanently burned, or it has expired. Zero trace remains on our infrastructure.</p>
+      </div>
+      <a href="/" class="btn btn-secondary" style="text-decoration: none;">Create a New Secret</a>
+    </section>
+
+    <footer class="footer">
+      ZeroTrace-Vault • RFC 3986 Anchor Isolation • Zero-Knowledge Architecture
+    </footer>
+  </main>
+
+  <script src="/crypto.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

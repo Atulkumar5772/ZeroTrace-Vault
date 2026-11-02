@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Environment & logs
+.env
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
