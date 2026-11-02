@@ -162,11 +162,7 @@ Expected output:
 
 ---
 
-## 🎯 6. Resume & Interview Pitch
 
-> *"Engineered **ZeroTrace-Vault**, an end-to-end zero-knowledge secret orchestration engine designed to eliminate credential sprawl in enterprise communications. Leveraged the browser WebCrypto API (AES-GCM-256) with client-side RFC 3986 `#` URL-fragment key isolation, guaranteeing zero server-side key exposure. Implemented an atomic single-view burn-on-read engine with anti-crawler preflight validation, ensuring sub-millisecond ephemeral memory destruction upon retrieval."*
-
----
 
 ## 📄 License
 
