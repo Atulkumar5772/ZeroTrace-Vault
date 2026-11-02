@@ -65,7 +65,7 @@ Most pastebins encrypt on the server side or hold plaintext credentials in memor
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ 4. Technology Stack
 
 <div align="center">
 
@@ -82,7 +82,7 @@ Most pastebins encrypt on the server side or hold plaintext credentials in memor
 
 ---
 
-## 📂 Project Structure
+## 📂 5. Project Structure
 
 ```text
 ZeroTrace-Vault/
@@ -114,7 +114,7 @@ ZeroTrace-Vault/
 
 ---
 
-## 💻 4. Running Locally
+## 💻 6. Running Locally
 
 ### 1. Start the Vault Server:
 ```bash
@@ -138,7 +138,7 @@ cat ~/.ssh/id_rsa | node cli/zerotrace-cli.js
 
 ---
 
-## 🧪 5. Automated Verification
+## 🧪 7. Automated Verification
 
 Run the end-to-end cryptographic and burn test suite:
 ```bash
@@ -161,8 +161,6 @@ Expected output:
 * ✅ Anti-IDOR / Path Traversal Rejection on ID
 
 ---
-
-
 
 ## 📄 License
 
