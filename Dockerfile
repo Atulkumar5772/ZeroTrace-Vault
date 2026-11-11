@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 COPY backend/package*.json ./
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -11,9 +11,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy node modules from builder
-COPY --from=builder /app/node_modules ./backend/node_modules
+# Copy application code and production dependencies
 COPY backend ./backend
+COPY --from=builder /app/node_modules ./backend/node_modules
 COPY frontend ./frontend
 COPY cli ./cli
 
