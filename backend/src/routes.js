@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const vaultStore = require('./vaultStore');
 
-/**
- * Standard API Response Envelope
- */
+function setNoStoreHeaders(res) {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+}
+
 function sendSuccess(res, statusCode, data, message = null) {
   return res.status(statusCode).json({
     success: true,
@@ -19,16 +22,26 @@ function sendError(res, statusCode, errorCode, message) {
     success: false,
     error: {
       code: errorCode,
-      message: message
+      message
     },
     timestamp: new Date().toISOString()
   });
 }
 
+// Enforce no-store caching on all secret endpoints
+router.use('/secret', (req, res, next) => {
+  setNoStoreHeaders(res);
+  next();
+});
+
 // POST /api/v1/secret/create
 router.post('/secret/create', (req, res) => {
   try {
-    const { ciphertext, iv, salt } = req.body;
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+      return sendError(res, 400, "INVALID_BODY", "Request body must be a valid JSON object.");
+    }
+
+    const { ciphertext, iv } = req.body;
 
     if (!ciphertext || !iv) {
       return sendError(res, 400, "MISSING_PAYLOAD", "Ciphertext and IV are strictly required.");
@@ -38,16 +51,22 @@ router.post('/secret/create', (req, res) => {
       return sendError(res, 422, "INVALID_FORMAT", "Payload fails cryptographic format or size specifications.");
     }
 
-    const id = vaultStore.storeSecret({ ciphertext, iv, salt });
+    const id = vaultStore.storeSecret({ ciphertext, iv });
 
     return sendSuccess(res, 201, { id }, "Secret stored securely. One-time retrieval armed.");
   } catch (err) {
+    if (err.code === "CAPACITY_REACHED") {
+      return sendError(res, 503, "VAULT_CAPACITY_REACHED", err.message);
+    }
+    if (err.code === "INVALID_FORMAT") {
+      return sendError(res, 422, "INVALID_FORMAT", err.message);
+    }
     return sendError(res, 500, "SERVER_FAULT", "Unable to store secret at this moment.");
   }
 });
 
 // GET /api/v1/secret/:id/meta
-// Pre-flight check without burning (prevents social media link crawler premature destruction)
+// Pre-flight check without burning (prevents social link crawlers from prematurely burning secrets)
 router.get('/secret/:id/meta', (req, res) => {
   const { id } = req.params;
 
@@ -86,12 +105,13 @@ router.post('/secret/:id/burn', (req, res) => {
   return sendSuccess(res, 200, payload, "Payload retrieved and permanently purged from server memory.");
 });
 
-// GET /api/v1/health
+// GET /api/v1/health (Excluded from rate limiting and avoids leaking secret counts)
 router.get('/health', (req, res) => {
+  setNoStoreHeaders(res);
   return sendSuccess(res, 200, {
     service: "ZeroTrace-Vault",
     status: "HEALTHY",
-    stats: vaultStore.getStats()
+    uptimeSeconds: vaultStore.getStats().uptimeSeconds
   });
 });
 

@@ -3,6 +3,7 @@
 # 🛡️ ZeroTrace-Vault — Zero-Knowledge Ephemeral Secret Sharing Vault
 
 [![Security: Zero-Knowledge](https://img.shields.io/badge/Security-Zero--Knowledge-10b981?style=for-the-badge&logo=shield)](https://github.com/Atulkumar5772/ZeroTrace-Vault)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render_HTTPS-06b6d4?style=for-the-badge&logo=render)](https://zerotrace-vault.onrender.com)
 [![Encryption: AES-GCM-256](https://img.shields.io/badge/Encryption-AES--GCM--256-0284c7?style=for-the-badge&logo=lock)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)
 [![RFC 3986 Anchor](https://img.shields.io/badge/RFC_3986-Key_Isolation-8b5cf6?style=for-the-badge)](https://datatracker.ietf.org/doc/html/rfc3986)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -72,11 +73,11 @@ Most pastebins encrypt on the server side or hold plaintext credentials in memor
 | Layer | Technologies | Description |
 | :--- | :--- | :--- |
 | **Cryptography** | Browser Native WebCrypto API (SubtleCrypto) | AES-GCM-256 bit encryption, 96-bit unique IVs, 0 external crypto dependencies |
-| **Backend Core** | Node.js, Express.js | High-throughput REST API, ephemeral in-memory storage map |
-| **Security Hardening** | Helmet.js, Express Rate Limit, CORS | Strict Content Security Policy (CSP), Anti-Clickjacking, IP rate limiting (30 req/min) |
-| **Frontend UI** | Modern HTML5, Responsive CSS3, Vanilla JS | Dark cyber glassmorphic operations console, real-time burn countdown |
-| **CLI Client** | Node.js CLI Script (`zerotrace-cli.js`) | Direct command-line secret sharing and UNIX pipeline integration (`cat file \| node cli`) |
-| **Containerization** | Docker, Docker Compose | Production container deployments |
+| **Backend Core** | Node.js, Express.js | High-throughput REST API, bounded ephemeral in-memory storage map |
+| **Security Hardening** | Helmet.js, Custom Sliding-Window Rate Limiter, Strict CORS | Strict CSP (no `unsafe-inline`), Anti-Clickjacking, `no-store` caching, IP sliding-window rate limit (30 req/min) |
+| **Frontend UI** | Modern HTML5, Responsive CSS3, Vanilla JS | Dark cyber glassmorphic operations console, real-time TTL burn countdown |
+| **CLI Client** | Node.js CLI Script (`zerotrace-cli.js`) | Direct HTTP/HTTPS secret sharing and UNIX pipeline integration (`cat file \| node cli`) |
+| **Containerization** | Docker, Docker Compose, Render Blueprint | Production non-root container & 1-click `render.yaml` deployment |
 
 </div>
 
@@ -91,12 +92,12 @@ ZeroTrace-Vault/
 ├── backend/
 │   ├── package.json                             # Dependencies: express, helmet, cors
 │   └── src/
-│       ├── server.js                            # Daemon entry point & graceful memory shredding
+│       ├── server.js                            # Daemon entry point & graceful store cleanup
 │       ├── routes.js                            # REST API endpoints (/create, /meta, /burn)
-│       ├── vaultStore.js                        # Ephemeral RAM store, UUID validation, TTL sweeper
-│       └── rateLimiter.js                       # IP-based anti-abuse defense
+│       ├── vaultStore.js                        # Bounded ephemeral RAM store, UUID & Base64URL validation, TTL sweeper
+│       └── rateLimiter.js                       # Sliding-window IP rate limiter
 ├── cli/
-│   └── zerotrace-cli.js                         # Terminal pipe tool for developers
+│   └── zerotrace-cli.js                         # Terminal pipe tool for developers (HTTP & HTTPS)
 ├── frontend/
 │   └── public/
 │       ├── index.html                           # Web vault interface
@@ -129,11 +130,14 @@ http://localhost:3000
 
 ### 2. CLI Tool Usage (Terminal / Pipes):
 ```bash
-# Share a direct string
+# Share a direct string against local server
 node cli/zerotrace-cli.js "my-production-token"
 
 # Or pipe output from any command:
 cat ~/.ssh/id_rsa | node cli/zerotrace-cli.js
+
+# Or target a remote HTTPS deployment (e.g. Render):
+ZEROTRACE_URL=https://zerotrace-vault.onrender.com node cli/zerotrace-cli.js "my-production-token"
 ```
 
 ---
@@ -145,20 +149,20 @@ Run the end-to-end cryptographic and burn test suite:
 node test_verification.js
 ```
 
-Or run the full 8-stage production security test:
+Or run the full production security & adversarial test suite (starts an isolated test server automatically or targets `PORT`):
 ```bash
 node tests/comprehensive_test.js
 ```
 
-Expected output:
-* ✅ Backend Daemon Healthcheck & Stats Endpoint
-* ✅ Reject malformed / non-base64 payload
-* ✅ Reject oversized secret payload (> 500KB)
-* ✅ End-to-End Cryptographic Secret Lifecycle
+Expected checks:
+* ✅ Backend Daemon Healthcheck & No Active-Count Leak
+* ✅ Reject Malformed / Non-Base64URL & Invalid IV/Tag Lengths
+* ✅ Reject Oversized Secret Payload (> 512 KB)
+* ✅ End-to-End Cryptographic Secret Lifecycle & Whitespace Preservation
 * ✅ Preflight Metadata Check (Preview Bot Anti-Burn Verification)
-* ✅ Atomic Burn-on-Read Single View Execution
-* ✅ Replay Attack Prevention (Payload Permanently Destroyed)
-* ✅ Anti-IDOR / Path Traversal Rejection on ID
+* ✅ Atomic Burn-on-Read & 20-Way Concurrent Race Condition Test
+* ✅ Replay Attack Prevention (`404` after Burn)
+* ✅ Strict CORS Rejection, `X-Forwarded-For` Spoof Immunity, Error Status Codes (`400`/`413`), `Cache-Control: no-store`, and CLI End-to-End Test
 
 ---
 

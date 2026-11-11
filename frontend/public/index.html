@@ -21,11 +21,17 @@
       <p class="subtitle">Client-Side AES-256-GCM. RFC 3986 Anchor Isolation. Single-View Burn.</p>
     </header>
 
+    <!-- GLOBAL ERROR / RATE-LIMIT BANNER -->
+    <div id="error-banner" class="alert alert-danger error-banner hidden" role="alert">
+      <strong id="error-banner-title">Error</strong>
+      <p id="error-banner-message"></p>
+    </div>
+
     <!-- VIEW 1: CREATE SECRET (ALICE) -->
     <section id="create-view" class="card" aria-label="Create Ephemeral Secret">
       <div class="label-row">
         <label for="secret-input">Secret Payload (Password, API Key, Token)</label>
-        <span id="char-counter" class="char-counter">0 chars</span>
+        <span id="char-counter" class="char-counter">0 bytes / 512 KB</span>
       </div>
 
       <div class="input-container">
@@ -40,11 +46,11 @@
       <div class="feature-pills">
         <span class="pill">🔒 AES-GCM-256 (SubtleCrypto)</span>
         <span class="pill">⚡ Strict Single-View</span>
-        <span class="pill">🛡️ Zero Server Memory Residual</span>
+        <span class="pill">🛡️ Zero Disk Persistence</span>
       </div>
 
       <button id="btn-create" class="btn btn-primary" type="button">
-        <span>🔐 Encrypt & Generate One-Time Link</span>
+        <span>🔐 Encrypt &amp; Generate One-Time Link</span>
       </button>
       <p class="shortcut-hint">Press <strong>Ctrl + Enter</strong> to encrypt instantly</p>
     </section>
@@ -65,7 +71,7 @@
         <span>📋 Copy Link to Clipboard</span>
       </button>
 
-      <button id="btn-new" class="btn btn-secondary" type="button">
+      <button id="btn-new" class="btn btn-secondary btn-spaced" type="button">
         <span>Create Another Secret</span>
       </button>
     </section>
@@ -77,12 +83,16 @@
         <p>This secret is primed for single-view destruction. Clicking the button below will retrieve the encrypted payload and permanently purge it from server memory.</p>
       </div>
 
-      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+      <div id="expiry-countdown" class="countdown-pill hidden">
+        <span>⏳ Auto-expires in: --:--:--</span>
+      </div>
+
+      <p class="reveal-intro">
         Automated crawlers and bot previews are blocked. Please click to verify human intent and decrypt locally.
       </p>
 
       <button id="btn-reveal" class="btn btn-danger" type="button">
-        <span>🔥 Click to Reveal & Burn Secret</span>
+        <span>🔥 Click to Reveal &amp; Burn Secret</span>
       </button>
     </section>
 
@@ -102,16 +112,25 @@
         <span>📋 Copy Secret to Clipboard</span>
       </button>
 
-      <a href="/" class="btn btn-secondary" style="margin-top: 10px; text-decoration: none;">Create Your Own Secret</a>
+      <a href="/" class="btn btn-secondary btn-spaced link-btn">Create Your Own Secret</a>
     </section>
 
     <!-- VIEW 5: ALREADY DESTROYED / 404 -->
     <section id="burned-view" class="card hidden" aria-label="Secret Expired or Burned">
       <div class="alert alert-danger">
-        <h3 style="margin-bottom: 8px;">❌ 404: Secret Destroyed</h3>
+        <h3 class="alert-heading">❌ 404: Secret Destroyed</h3>
         <p>This secret has already been retrieved and permanently burned, or it has expired. Zero trace remains on our infrastructure.</p>
       </div>
-      <a href="/" class="btn btn-secondary" style="text-decoration: none;">Create a New Secret</a>
+      <a href="/" class="btn btn-secondary link-btn">Create a New Secret</a>
+    </section>
+
+    <!-- VIEW 6: MISSING OR INVALID KEY (SECRET WAS NOT BURNED) -->
+    <section id="invalid-key-view" class="card hidden" aria-label="Invalid Decryption Key">
+      <div class="alert alert-warning">
+        <h3 class="alert-heading">🔑 Missing or Corrupted Decryption Key</h3>
+        <p>The URL fragment (#key) is missing or truncated. Because the decryption key never leaves your browser, this secret could not be decrypted — and it was <strong>NOT burned</strong> on the server. Please ask the sender for the complete link including the # fragment.</p>
+      </div>
+      <a href="/" class="btn btn-secondary link-btn">Create a New Secret</a>
     </section>
 
     <footer class="footer">

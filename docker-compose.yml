@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   zerotrace-vault:
     build:
@@ -11,7 +9,9 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - FORCE_HTTPS=false
+      - TRUST_PROXY=false
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    read_only: false
+    read_only: true
