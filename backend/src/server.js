@@ -8,6 +8,10 @@ const vaultStore = require('./vaultStore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Trust first reverse proxy (Render, Railway, Cloudflare) for accurate client IP in rate limiting
+app.set('trust proxy', 1);
 
 // Production Security Headers via Helmet
 app.use(helmet({
@@ -19,13 +23,13 @@ app.use(helmet({
       imgSrc: ["'self'", "data:"],
       connectSrc: ["'self'"],
       objectSrc: ["'none'"],
-      upgradeInsecureRequests: []
+      ...(isProduction ? { upgradeInsecureRequests: [] } : { upgradeInsecureRequests: null })
     }
   },
   crossOriginEmbedderPolicy: false,
   xContentTypeOptions: true, // Prevent MIME sniffing
   xFrameOptions: { action: 'deny' }, // Anti-Clickjacking
-  hsts: { maxAge: 31536000, includeSubDomains: true }
+  hsts: isProduction ? { maxAge: 31536000, includeSubDomains: true } : false
 }));
 
 // CORS Configuration (Strict Local & Same-Origin)

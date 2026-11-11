@@ -42,12 +42,14 @@ function decrypt(ciphertextB64, ivB64, keyB64) {
   return dec;
 }
 
+const TEST_PORT = process.env.PORT || 3000;
+
 function makeRequest(method, path, data = null) {
   return new Promise((resolve, reject) => {
     const postData = data ? JSON.stringify(data) : null;
     const req = http.request({
       hostname: 'localhost',
-      port: 3000,
+      port: TEST_PORT,
       path: path,
       method: method,
       headers: {

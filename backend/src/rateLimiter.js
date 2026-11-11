@@ -15,7 +15,7 @@ class RateLimiter {
 
   middleware() {
     return (req, res, next) => {
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+      const ip = req.ip || req.socket.remoteAddress || 'unknown';
       const now = Date.now();
 
       let clientRecord = this.hits.get(ip);
@@ -34,8 +34,12 @@ class RateLimiter {
       clientRecord.count++;
       if (clientRecord.count > this.limit) {
         return res.status(429).json({
-          error: "Too Many Requests",
-          message: "Rate limit exceeded. Please wait a moment before trying again."
+          success: false,
+          error: {
+            code: "RATE_LIMIT_EXCEEDED",
+            message: "Rate limit exceeded. Please wait a moment before trying again."
+          },
+          timestamp: new Date().toISOString()
         });
       }
 
