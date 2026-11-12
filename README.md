@@ -82,6 +82,13 @@ Most pastebins encrypt on the server side or hold plaintext credentials in memor
 </div>
 
 ---
+## 🌐 Live Demo
+
+🔗 **Live Website:** [https://zerotrace-vault.onrender.com](https://zerotrace-vault.onrender.com)
+
+🔗 **GitHub Repository:** [https://github.com/Atulkumar5772/ZeroTrace-Vault](https://github.com/Atulkumar5772/ZeroTrace-Vault)
+
+---
 
 ## 📂 5. Project Structure
 
