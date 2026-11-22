@@ -4,6 +4,7 @@
 
 [![Security: Zero-Knowledge](https://img.shields.io/badge/Security-Zero--Knowledge-10b981?style=for-the-badge&logo=shield)](https://github.com/Atulkumar5772/ZeroTrace-Vault)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Render_HTTPS-06b6d4?style=for-the-badge&logo=render)](https://zerotrace-vault.onrender.com)
+[![GitHub Stars](https://img.shields.io/github/stars/Atulkumar5772/ZeroTrace-Vault?style=for-the-badge&logo=github&color=fe428e)](https://github.com/Atulkumar5772/ZeroTrace-Vault/stargazers)
 [![Encryption: AES-GCM-256](https://img.shields.io/badge/Encryption-AES--GCM--256-0284c7?style=for-the-badge&logo=lock)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)
 [![RFC 3986 Anchor](https://img.shields.io/badge/RFC_3986-Key_Isolation-8b5cf6?style=for-the-badge)](https://datatracker.ietf.org/doc/html/rfc3986)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -16,6 +17,10 @@
 <br>
 
 *An enterprise-grade, end-to-end zero-knowledge secret orchestration engine designed to eliminate credential sprawl in corporate communications. Built with client-side WebCrypto AES-GCM-256, RFC 3986 URL-hash key isolation, and an atomic single-view burn-on-read ephemeral engine.*
+
+<br>
+
+> 🌟 **Support Open Source Privacy:** If you find this project valuable, please consider giving it a **Star ⭐ on GitHub!** It takes 1 second and motivates future cryptographic and privacy tooling.
 
 </div>
 
